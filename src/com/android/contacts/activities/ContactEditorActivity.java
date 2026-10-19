@@ -314,6 +314,24 @@ public class ContactEditorActivity extends AppCompatContactsActivity implements
     public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
+        // CubeOS: new contacts are made in CubeOS's New Contact screen (Phone), which needs the
+        // owner's Cubeline and never asks for another account. Editing stays here.
+        if (savedState == null && Intent.ACTION_INSERT.equals(getIntent().getAction())
+                && !getIntent().getBooleanExtra(
+                        ContactEditorFragment.INTENT_EXTRA_NEW_LOCAL_PROFILE, false)) {
+            final Intent cube = new Intent(getIntent())
+                    .setComponent(new ComponentName("org.cubeapp.phone",
+                            "org.cubeapp.phone.contact.NewContactActivity"))
+                    .addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            try {
+                startActivity(cube);
+                finish();
+                return;
+            } catch (android.content.ActivityNotFoundException e) {
+                // No CubeOS Phone: fall through to the stock editor.
+            }
+        }
+
         getWindow().setHideOverlayWindows(true);
 
         RequestPermissionsActivity.startPermissionActivityIfNeeded(this);

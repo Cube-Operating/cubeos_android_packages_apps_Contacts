@@ -303,6 +303,9 @@ public class ContactsPreferences implements OnSharedPreferenceChangeListener {
      */
     public boolean shouldShowAccountChangedNotification(List<AccountWithDataSet>
             currentWritableAccounts) {
+        // CubeOS: contacts live on the phone with the owner's Cubeline; never prompt to add an
+        // account ("…back up your contacts to Google").
+        if (true) return false;
         final AccountWithDataSet defaultAccount = getDefaultAccount();
 
         AccountWithDataSet localAccount = AccountWithDataSet.getLocalAccount(mContext);
